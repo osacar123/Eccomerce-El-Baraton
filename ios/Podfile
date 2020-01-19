@@ -38,6 +38,10 @@ target 'Ecommerce' do
 
   pod 'rn-range-slider', :path => '../node_modules/rn-range-slider'
 
+  pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
+
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
   target 'EcommerceTests' do
     inherit! :search_paths
     # Pods for testing

@@ -14,28 +14,26 @@ import ProductCard from '../../Components/ProductCard'
 import Filters from '../../Components/Filters'
 import { loadData }  from '../../Services/api'
 
+import * as productsActions from '../../Redux/Actions/productsActions'
+import { connect } from 'react-redux';
+
 
 class Home extends React.Component {
-  state = {
-    
-    firstQuery: '',
-    data: [
-      {
-        id:1,
-      },
-      {
-        id:2,
-      },
-      {
-        id:3,
-      }
-    ]
-  };
+  constructor(props) {
+    super(props);
+    this.state = {    
+      firstQuery: '',
+      
+    };
+    this._handleLoadData();
+  }
+  
 
-  componentWillMount () {
+  _handleLoadData  = () => {
     loadData()
     .then((response)=> {
-        console.log(response.data)
+        //console.log(response.data)
+        this.props.loadAction(response.data)
         
       })
       .catch((error)=> {
@@ -46,11 +44,10 @@ class Home extends React.Component {
         
       })
   }
-
     
   render() {
-    const { firstQuery, checked, orderBy } = this.state;
-    
+    const { firstQuery} = this.state;
+   
     return (
       <View
         style={styles.container}
@@ -63,17 +60,13 @@ class Home extends React.Component {
           />
           
           <Filters />
-          <ScrollView
-              contentInsetAdjustmentBehavior="automatic"
-              style={styles.scrollView}
-          > 
+          
             <FlatList
-              data={this.state.data}
-              renderItem={({ item }) => <ProductCard />}
-              keyExtractor={item => item.id}
+              data={this.props.data}
+              renderItem={({ item }) => <ProductCard {...this.props} data={item}/>}
+              keyExtractor={item => item.code}
               numColumns={2}
-            />
-          </ScrollView>
+            />          
       </View>
     );
   }
@@ -84,6 +77,7 @@ const styles = StyleSheet.create({
     container: {        
       flex: 1,
       backgroundColor:'#eee',
+      
       margin:10
     },
     searchbar:{
@@ -98,4 +92,9 @@ const styles = StyleSheet.create({
   
 
 
-export default Home;
+const mapStateToProps = (reducers) => {
+  return reducers.productsReducer;
+
+};
+
+export default connect(mapStateToProps, productsActions)(Home);

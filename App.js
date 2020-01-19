@@ -3,6 +3,7 @@ import Home from "./src/Views/Home"
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
 import Persist from './src/Redux/store'
+import Routes from './src/Routes'
 
 const persistStore = Persist();
 export default class App extends React.Component {
@@ -11,7 +12,7 @@ export default class App extends React.Component {
     return (
       <Provider store={ persistStore.store }>
         <PersistGate loading={null} persistor={ persistStore.persistor }>
-          <Home />
+          <Routes />
         </PersistGate>
       </Provider>
     );

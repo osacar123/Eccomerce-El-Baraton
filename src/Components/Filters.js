@@ -21,7 +21,7 @@ class Filters extends React.Component {
         maximoStock:'300',
         checked: '',
         scrollEnabled:true,
-        expanded: true,
+        expanded: false,
         
       };
   
