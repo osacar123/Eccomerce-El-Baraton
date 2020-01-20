@@ -6,7 +6,7 @@ import {
     Image
 
 } from 'react-native';
-import * as productsActions from '../../Redux/Actions/productsActions';
+import * as shoppingCartActions from '../../Redux/Actions/shoppingCartActions';
 import { connect } from 'react-redux';
 import { Card, Title, Paragraph, Button, TextInput } from 'react-native-paper';
 import { loadDetail }  from '../../Services/api';
@@ -20,7 +20,9 @@ class Detail extends React.Component {
         available:false,
         name:'',
         quantity:10,
-        price:0
+        price:0,
+        pk:0,
+        selectQuantity:1
         
     };
     this._handlerLoadDetail()
@@ -31,7 +33,7 @@ class Detail extends React.Component {
         loadDetail(id)
         .then((response)=> {
             this.setState({...response.data}) 
-            console.log(response.data)      
+                
         })
         .catch((error)=> {
             console.log(error.response)
@@ -42,11 +44,30 @@ class Detail extends React.Component {
         })
 
   }
+  _handlerAddCart = () =>{
+    this.props.addAction(this.state.pk, this.state)
+
+  }
+  addProduct = () => {
+        const selectQuantity = this.state.selectQuantity
+        if (selectQuantity<this.state.quantity){
+            this.setState({selectQuantity:selectQuantity+1})
+        }else{
+            this.setState({selectQuantity})
+        }
+        
+  }
+  substractProduct = () =>  {
+    const selectQuantity = this.state.selectQuantity
+    if (selectQuantity>1){
+        this.setState({selectQuantity:selectQuantity-1})
+    }else{
+        this.setState({selectQuantity})
+    }
+
+  }
 
   render() {
-    const avalaible = false;
-    
-        
     return (
         <View
             style={styles.container}
@@ -85,29 +106,34 @@ class Detail extends React.Component {
                             style={{flexDirection:'row', height:30}}
                         >
                             <Button
-                            mode={'outlined'}
-                            >
-                                +
-                            </Button>
-                            <Text
-                                style={{width:30, marginHorizontal:10, textAlign:'center'}}
-                            >
-                                1
-                            </Text>
-                            <Button
-                            mode={'outlined'}
+                                mode={'outlined'}
+                                onPress={this.substractProduct}
                             >
                                 -
                             </Button>
+                            
+                            <Text
+                                style={{width:30, marginHorizontal:10, textAlign:'center'}}
+                            >
+                                {this.state.selectQuantity}
+                            </Text>
+                            <Button
+                                mode={'outlined'}
+                                onPress={this.addProduct}
+                            >
+                                +
+                            </Button>
 
                         </View>
-                        <Button
+                        {this.state.available&&<Button
                             mode={'outlined'}
+                            onPress={this._handlerAddCart}
                         >
                                <Text
                                     style={{fontSize:10}}
                                >Agregar </Text> 
                         </Button>
+                        }
                     </View>
                 </View>
             </Card>
@@ -122,8 +148,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#eee',
         flex:1,
         justifyContent:'center',
-        
-        //alignItems:'center'
+
     }
     
   }
@@ -132,8 +157,8 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = (reducers) => {
-  return reducers.productsReducer;
+  return reducers.shopingCartReducer;
 
 };
 
-export default connect(mapStateToProps, productsActions)(Detail);
+export default connect(mapStateToProps, shoppingCartActions)(Detail);

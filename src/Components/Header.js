@@ -17,23 +17,19 @@ class Header extends Component{
     state = {
         visible: false,
       };
-    
-
-    
-
     render(){
             
             return (
                 <Appbar.Header style={{backgroundColor:'#FFFFFF'}}>
-                        {this.props.scene.route.routeName != 'Home' &&
-                        <IconButton
-                            icon="arrow-left"
-                            
-                            size={20}
-                            onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
-                            //onPress={() => console.log(this.props.scene.route.routeName)}
-                        />
-                        }
+                    {this.props.scene.route.routeName != 'Home' &&
+                    <IconButton
+                        icon="arrow-left"
+                        
+                        size={20}
+                        onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
+                        //onPress={() => console.log(this.props.scene.route.routeName)}
+                    />
+                    }
                         
                     <View
                         style={styles.container}
@@ -48,7 +44,7 @@ class Header extends Component{
                     <IconButton
                             icon="cart-outline"                            
                             size={20}
-                            onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
+                            onPress={() => this.props.navigation.navigate('ShoppingCart')}
 
                         />
                     
