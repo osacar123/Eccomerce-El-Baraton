@@ -9,7 +9,8 @@ export default (state = INITIAL_STATE, action )=>{
             return {...state};
         case 'pop':
             delete state.dataShoppingCart[action.payload.key]
-            return {...state};
+            const data = state.dataShoppingCart
+            return {...state, dataShoppingCart:data};
         default:
             return state;
     }

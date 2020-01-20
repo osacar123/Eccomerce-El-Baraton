@@ -3,13 +3,14 @@ import {
     Text,
     View,
     StyleSheet,
-    FlatList
+    FlatList,
+    Image
 
 } from 'react-native';
 import * as shoppingCartActions from '../../Redux/Actions/shoppingCartActions';
 import { connect } from 'react-redux';
 import { Card, Button } from 'react-native-paper';
-import ShoppingCard from '../../Components/ShopingCartCard'
+
 
 
 
@@ -23,13 +24,62 @@ class ShoppingCart extends React.Component {
         quantity:10,
         price:0,
         pk:0,
-        selectQuantity:1
+        selectQuantity:1,
+        data:{}
         
     };
-    
+    this.loadData();
   }
- 
-
+  removeProductToCart = (pk) =>{
+    var data = this.state.data
+    delete data[pk]
+    this.setState({data})
+    
+   
+}
+  _renderList = () => {
+    var data = Object.values(this.state.data)
+    
+    return  data.map((i,n) =>{ 
+      return (
+          <View
+              style={{flexDirection:'row'}}
+          > 
+              <View
+                  style={{flex:0.4,height:100,padding:20}}
+              >
+                  <Image
+                      style={{width: '100%', height: '100%', borderRadius:20}}
+                      resizeMode='cover'
+                      source={{uri:'https://picsum.photos/700'}}                            
+                  />
+              </View>
+              <View
+                  style={{flex:0.5,justifyContent:'center'}}
+              >
+                  <Text>{i.name} </Text>
+                  <Text> {i.selectQuantity}</Text>
+                  <Text> {i.price}</Text>
+                  
+              </View>
+              <View
+                  style={{alignItems:'center',justifyContent:'center'}}
+              >
+                  <Button
+                      icon='delete'
+                      mode={'outlined'}
+                      onPress={this.removeProductToCart.bind(this,i.pk)}
+                  >
+                      
+                  </Button>
+              </View>
+          </View>
+      );
+    });
+  }
+  loadData = () => {    
+    this.state['data']=this.props.dataShoppingCart
+  }
   render() {
     
     return (
@@ -40,12 +90,7 @@ class ShoppingCart extends React.Component {
                 style={{borderRadius:20}}
             >
             
-            <FlatList
-              data={Object.values(this.props.dataShoppingCart)}
-              renderItem={({ item }) => <ShoppingCard data={item}/>}
-              keyExtractor={item => item.pk}
-              
-            />   
+            {this._renderList()}
             </Card>
         </View>
     );
@@ -57,8 +102,7 @@ const styles = StyleSheet.create({
         padding:10,
         backgroundColor:'#eee',
         flex:1,
-        
-        //alignItems:'center'
+ 
     }
     
   }
