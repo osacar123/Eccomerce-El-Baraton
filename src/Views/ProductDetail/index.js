@@ -22,8 +22,7 @@ class Detail extends React.Component {
         quantity:10,
         price:0,
         pk:0,
-        selectQuantity:1
-        
+        selectQuantity:1        
     };
     this._handlerLoadDetail()
   }
@@ -46,6 +45,7 @@ class Detail extends React.Component {
   }
   _handlerAddCart = () =>{
     this.props.addAction(this.state.pk, this.state)
+    this.props.navigation.navigate('ShoppingCart')
 
   }
   addProduct = () => {
@@ -73,23 +73,23 @@ class Detail extends React.Component {
             style={styles.container}
         >
             <Card
-                style={{borderRadius:20}}
+                style={styles.card}
             >
                 <View
-                    style={{flexDirection:'row'}}
+                    style={styles.completView}
                 >   
                     <View
-                        style={{flex:0.5,height:300,padding:20}}
+                        style={styles.containerImage}
                     >
                         <Image
-                            style={{width: '100%', height: '100%', borderRadius:20}}
+                            style={styles.containerText}
                             resizeMode='cover'
                             source={{uri:'https://picsum.photos/700'}}                            
                         />
                     </View>
                     
                     <View
-                        style={{flex:0.5,height:300,padding:10, justifyContent:'space-between', paddingRight:60}}
+                        style={{}}
                     >
                         <Title>{this.state.name}</Title>
                         <Paragraph>Precio: ${this.state.price}COP</Paragraph>
@@ -149,7 +149,32 @@ const styles = StyleSheet.create({
         flex:1,
         justifyContent:'center',
 
+    },
+    card:{
+        borderRadius:20
+    },
+    completView:{
+        flexDirection:'row'
+    },
+    containerImage:{
+        flex:0.5,
+        height:300,
+        padding:20
+    },
+    image:{
+        width: '100%', 
+        height: '100%', 
+        borderRadius:20
+    },
+    containerText:{
+        flex:0.5,
+        height:300,
+        padding:10, 
+        justifyContent:'space-between', 
+        paddingRight:60
     }
+
+
     
   }
 )

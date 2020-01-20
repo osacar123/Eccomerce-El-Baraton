@@ -20,7 +20,7 @@ class Header extends Component{
     render(){
             
             return (
-                <Appbar.Header style={{backgroundColor:'#FFFFFF'}}>
+                <Appbar.Header style={styles.header}>
                     {this.props.scene.route.routeName != 'Home' &&
                     <IconButton
                         icon="arrow-left"
@@ -34,19 +34,16 @@ class Header extends Component{
                     <View
                         style={styles.container}
                     >
-                    
                     <Text
                         style={styles.tittle}
                     >¡El Baraton!</Text>
                     </View>
-                   
-                    
                     <IconButton
-                            icon="cart-outline"                            
-                            size={20}
-                            onPress={() => this.props.navigation.navigate('ShoppingCart')}
-
-                        />
+                        icon={Object.keys(this.props.dataShoppingCart).length>0?'cart-arrow-down':'cart-outline'}                           
+                        size={20}
+                        onPress={() => this.props.navigation.navigate('ShoppingCart')}
+                        color={Object.keys(this.props.dataShoppingCart).length>0?'#f00':'#444'}
+                    />
                     
                 </Appbar.Header>
             )
@@ -63,8 +60,16 @@ const styles = StyleSheet.create({
         fontSize:20,
         fontWeight:'bold',
         color:'#666'
+    },
+    header:{
+        backgroundColor:'#FFFFFF'
     }
 
 });
 
-export default (Header);
+const mapStateToProps = (reducers) => {
+    return reducers.shopingCartReducer;
+  
+  };
+  
+  export default connect(mapStateToProps, {})(Header);

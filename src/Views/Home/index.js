@@ -8,7 +8,7 @@ import {
     
 } from 'react-native';
 
-import { Searchbar } from 'react-native-paper';
+import { Searchbar, IconButton, Colors } from 'react-native-paper';
 import ProductCard from '../../Components/ProductCard'
 
 import Filters from '../../Components/Filters'
@@ -29,8 +29,9 @@ class Home extends React.Component {
   }
   
 
-  _handleLoadData  = () => {
-    loadData()
+  _handleLoadData  = (search='') => {
+    
+    loadData('','1449-19000','',search)
     .then((response)=> {
         //console.log(response.data)
         this.props.loadAction(response.data)
@@ -44,6 +45,7 @@ class Home extends React.Component {
         
       })
   }
+  
     
   render() {
     const { firstQuery} = this.state;
@@ -54,9 +56,19 @@ class Home extends React.Component {
       >
           <Searchbar
             placeholder="Search"
-            onChangeText={query => { this.setState({ firstQuery: query }); }}
+            onChangeText={query => {this.setState({ firstQuery: query })}}
             value={firstQuery}
             style={styles.searchbar}
+            onSubmitEditing={()=>this._handleLoadData(this.state.firstQuery)}
+            clearIcon={()=><IconButton 
+                              icon="close-circle"
+                              color={'#eee'}
+                              size={20}
+                              onPress={() => {
+                                  this.setState({ firstQuery: '' });
+                                  this._handleLoadData()}}
+                            />
+                      }
           />
           
           <Filters />

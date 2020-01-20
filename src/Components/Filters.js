@@ -4,31 +4,37 @@ import {
     View,
     Image,
     ScrollView,
-    StyleSheet
+    StyleSheet,
+    Picker
 } from 'react-native';
 import { List, Card, RadioButton, TextInput  } from 'react-native-paper';
 import MultiSlider from '@ptomasroos/react-native-multi-slider'
+import { loadData }  from '../Services/api'
+import * as productsActions from '../Redux/Actions/productsActions'
+import { connect } from 'react-redux';
 
 
 class Filters extends React.Component {
     state = {
         orderBy:'',
-        valuesPrice:[3,150],
-        minimoPrice: '$3',
-        maximoPrice:'$150',
-        valuesStock:[3,150],
-        minimoStock: '1',
-        maximoStock:'300',
+        valuesPrice:[1449,18849],
+        minimoPrice: '$1449',
+        maximoPrice:'$18849',
         checked: '',
         scrollEnabled:true,
         expanded: false,
         
       };
   
-    _handlePress = () =>
-    this.setState({
-      expanded: !this.state.expanded
-    });
+    _handlePress = () =>{
+      
+      if (this.state.expanded){
+        this._handleLoadData()
+      }
+      this.setState({
+        expanded: !this.state.expanded
+      })
+    };
   
   _handleChangePrice = (values) => {
     this.setState({valuesPrice:values})
@@ -43,6 +49,30 @@ class Filters extends React.Component {
       minimoStock:'$'+values[0],
       maximoStock:'$'+values[1]
     })
+  }
+  _handleLoadData  = () => {
+    
+    const orderBy = this.state.orderBy 
+    
+    var available = ''
+    this.state.orderBy  == 'available'? available = 'true':available = '';
+    this.state.checked  == 'disponible'? available = 'true':available = '';
+    const values = this.state.valuesPrice[0]+'-'+this.state.valuesPrice[1]
+    
+    
+    loadData(orderBy,values,available)
+    .then((response)=> {
+        //console.log(response.data)
+        this.props.loadAction(response.data)
+        
+      })
+      .catch((error)=> {
+        console.log(error.response)
+        this.setState({error_msj:'hay un error'})
+        this.setState({error:true})
+
+        
+      })
   }
   render() {
     const { firstQuery, checked, orderBy } = this.state;
@@ -66,8 +96,8 @@ class Filters extends React.Component {
                 <MultiSlider
                     values={this.state.valuesPrice}
                     sliderLength={350}
-                    min={1}
-                    max={300}
+                    min={1400}
+                    max={18849}
                     onValuesChange = {(values) => {this._handleChangePrice(values)}}
                   />
                   <View
@@ -91,16 +121,16 @@ class Filters extends React.Component {
                   </View>
               </View>
               <View
-                style={{paddingLeft:15}}
+                style={{paddingLeft:15,borderBottomWidth:1,}}
               >
                 <View
                   style={{flexDirection:'row', alignItems:'center'}}
                 >
                 <Text>Disponible      </Text>
                 <RadioButton
-                  value="first"
-                  status={checked === 'first' ? 'checked' : 'unchecked'}
-                  onPress={() => { this.setState({ checked: 'first' }); }}
+                  value="disponible"
+                  status={checked === 'disponible' ? 'checked' : 'unchecked'}
+                  onPress={() => { this.setState({ checked: 'disponible' }); }}
                 />
                 </View>
                 <View
@@ -108,43 +138,23 @@ class Filters extends React.Component {
                 >
                 <Text>No disponible</Text>
                 <RadioButton
-                  value="second"
-                  status={checked === 'second' ? 'checked' : 'unchecked'}
-                  onPress={() => { this.setState({ checked: 'second' }); }}
+                  value="noDisponible"
+                  status={checked === 'noDisponible' ? 'checked' : 'unchecked'}
+                  onPress={() => { this.setState({ checked: 'noDisponible' }); }}
                 />
                 </View>
               </View>
               <View
                 style={{alignItems:"center"}}
               >
-                <MultiSlider
-                    values={this.state.valuesStock}
-                    sliderLength={350}
-                    min={1}
-                    max={300}
-                    onValuesChange = {(values) => {this._handleChangeStock(values)}}
-                  />
+                
+                  
                   <View
-                    style={{flexDirection:'row', borderBottomWidth:1, marginHorizontal:20}}
+                    style={{marginVertical:10}}
                   >
-                    
-                    <TextInput
-                      label='Minimo'
-                      value={this.state.minimoStock}
-                      onChangeText={text => this.setState({ minimoStock:text })}
-                      style={{flex:1, margin:10, backgroundColor:'#fff'}}
-                      disabled={true}
-                    />
-                    <TextInput
-                      label='Maximo'
-                      value={this.state.maximoStock}
-                      onChangeText={text => this.setState({ maximoStock:text })}
-                      style={{flex:1, margin:10, backgroundColor:'#fff'}}
-                      disabled={true}
-                    />
-                  </View>
-                  <View>
-                   <Text>
+                   <Text
+                    style={{color:"#00f"}}
+                   >
                      Ordenar por
                    </Text>
                    <View
@@ -191,7 +201,6 @@ class Filters extends React.Component {
 
               </View>
               
-            
             </List.Accordion>
           </List.Section>
           </Card>
@@ -213,4 +222,9 @@ const styles = StyleSheet.create({
     }
   )
     
-export default Filters;
+  const mapStateToProps = (reducers) => {
+    return reducers.productsReducer;
+  
+  };
+  
+  export default connect(mapStateToProps, productsActions)(Filters);
